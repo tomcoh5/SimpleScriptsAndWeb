@@ -1,0 +1,82 @@
+hey another fun project i made 
+in this project i used docker ,aws , prometheus, grafana ,linux and of course the most importana wordpress
+in the beggining i used docker in linux to make wordpress server 
+the first thing i did was switching to root acount , after this i did  yum update (i used centos 7 in oracle vm)
+and now i need to install docker and docker-compose
+"yum install -y yum-utils device-mapper-persistent-data lvm2"
+now congifure docker
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+install docker 
+yum install docker-ce
+add your user do docker (unless you are root)
+usermod -aG docker $(whoami)
+start and enable docker service
+systemctl enable docker.service
+systemctl start docker.service
+now for docker-compose
+yum install epel-release
+yum install -y python-pip
+pip install docker-compose
+yum upgrade python*
+after this i had docker and docker-compose on my linux system
+and now i want to setup wordpress server (check docker-compose file in this directory)
+docker-compose up -d
+all up no errors 
+then i need to check my server is really working
+so im going to enter my web broswer to "http://my-ip"
+to find your ip go to ifconfig
+and then you can setup your wordpress 
+that was the first step , creating wordpress server with mysql as database
+the second part is converting it to aws instance
+so first im going to launch my aws ec2 instance (im using linux amazon ami)
+make sure you have the following inbound rules
+Http source anywhere
+custom tcp port 3000 only from your ip
+https source anywhere
+custom tcp 9090 only from your ip
+custom tcp 9323 only from your ip
+and again i need to install docker + docker-compose 
+sudo su (to become root)
+amazon-linux-extras install docker
+start docker service
+service docker start
+add your deafult user to docker group
+usermod -a -G docker ec2-user
+make docker auto start 
+chkconfig docker on
+and now reboot your ec2 instance
+so now we want to tranfser our files
+first what we need to do is to get rid of the "key pair" in ec2 instance 
+because we want to use scp and we cant use it if we dont got the pair key
+so enter your ec2 istance 
+vim /etc/ssh/sshd_config
+you need to change the following things or enabling them
+PermitRootLogin yes
+Port 22
+PasswordAuthentication yes
+now do sudo su
+you need to set password for ur root 
+passwd 
+and do password for your root
+service ssh restart
+now you can use ssh or scp without keypair
+enter your linux vm (keep your ec2 instance open)
+grab both of your containers names (mysql and wordpress) by doing  docker container ls
+and now you need to zip them by doing 
+docker export container-name | gzip > container-name.gz
+now you need to do scp
+enter your container.gz path
+scp -i container-name.gz root@your-ec2-instace-ip /tmp/
+make sure to scp into /tmp that's the only directoty you can copy to it 
+move to where you want 
+and then unzip it 
+zcat container-name.gz | docker import - container-name
+and then you can do docker start container-name
+after this you connect to your website by using your ipv4 instance 
+now we want to install grafana and prometheus
+we do docker pull grafana/grafana
+docker pull prom/prometheus:
+docker run -d -p 3000:3000 grafana 
+now if you go to "ipv4-instance:3000" you can see your grafana dashboard 
+
+
