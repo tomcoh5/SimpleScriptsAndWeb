@@ -1,7 +1,0 @@
-hello this is one of my projects that i made and it was fun and i learned a lot . 
-i first created docker container on my linux oracle vm machine, creating wordpress server with my sql.
-then i had to convert it to an aws docker container (using scp) , after this i installed prometheus
-so i can have graph for my docker container and then i installed grafana for more beatiful ui
-that's my wordpress website : 18.195.137.76
-and that's my grafana dashboard 
-http://18.195.137.76:3000/dashboard/new?orgId=1
