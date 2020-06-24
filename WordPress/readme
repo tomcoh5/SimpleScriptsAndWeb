@@ -1,8 +1,10 @@
 hey another fun project i made 
-in this project i used docker ,aws , prometheus, grafana ,linux and of course the most importana wordpress
-in the beggining i used docker in linux to make wordpress server 
-the first thing i did was switching to root acount , after this i did  yum update (i used centos 7 in oracle vm)
-and now i need to install docker and docker-compose
+in this project i used docker ,aws , prometheus, grafana ,linux and of course the most important wordpress
+in the beggining i used docker in linux to make wordpress server .
+
+Step 1 
+the first thing i did was switching to root acount , after this i did yum update (i used centos 7 in oracle vm)
+and now i need to install docker and docker-compose.
 "yum install -y yum-utils device-mapper-persistent-data lvm2"
 now congifure docker
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -13,22 +15,28 @@ usermod -aG docker $(whoami)
 start and enable docker service
 systemctl enable docker.service
 systemctl start docker.service
+
+Step 2
 now for docker-compose
 yum install epel-release
 yum install -y python-pip
 pip install docker-compose
 yum upgrade python*
 after this i had docker and docker-compose on my linux system
+
+Step 3
 and now i want to setup wordpress server (check docker-compose file in this directory)
-docker-compose up -d
+docker-compose up -d (this file will be here in this directory).
 all up no errors 
 then i need to check my server is really working
 so im going to enter my web broswer to "http://my-ip"
 to find your ip go to ifconfig
 and then you can setup your wordpress 
-that was the first step , creating wordpress server with mysql as database
+that was the first step  , creating wordpress server with mysql as database in linux (not really the first step).
+
+Step 4
 the second part is converting it to aws instance
-so first im going to launch my aws ec2 instance (im using linux amazon ami)
+so first im going to launch my aws ec2 instance. (im using linux amazon ami 2)
 make sure you have the following inbound rules
 Http source anywhere
 custom tcp port 3000 only from your ip
@@ -44,22 +52,26 @@ add your deafult user to docker group
 usermod -a -G docker ec2-user
 make docker auto start 
 chkconfig docker on
-and now reboot your ec2 instance
+and now reboot your ec2 instance.
+
+Step5
 so now we want to tranfser our files
 first what we need to do is to get rid of the "key pair" in ec2 instance 
 because we want to use scp and we cant use it if we dont got the pair key
-so enter your ec2 istance 
-vim /etc/ssh/sshd_config
+so enter your ec2 istance  
+sudo su
+vim /etc/ssh/sshd_config (we want to disable )
 you need to change the following things or enabling them
 PermitRootLogin yes
 Port 22
 PasswordAuthentication yes
-now do sudo su
 you need to set password for ur root 
 passwd 
 and do password for your root
 service ssh restart
-now you can use ssh or scp without keypair
+now you can use ssh or scp without keypair.
+
+Step 6
 enter your linux vm (keep your ec2 instance open)
 grab both of your containers names (mysql and wordpress) by doing  docker container ls
 and now you need to zip them by doing 
@@ -72,11 +84,19 @@ move to where you want
 and then unzip it 
 zcat container-name.gz | docker import - container-name
 and then you can do docker start container-name
-after this you connect to your website by using your ipv4 instance 
-now we want to install grafana and prometheus
+after this you connect to your website by using your ipv4 instance
+
+Step 7
+now we want to install grafana 
 we do docker pull grafana/grafana
-docker pull prom/prometheus:
-docker run -d -p 3000:3000 grafana 
 now if you go to "ipv4-instance:3000" you can see your grafana dashboard 
 
+Step 8
+configuring promtheus (file will be in this folder)
+docker-compose up -d 
 
+Step 9 
+the end , now the final thing we want to do we want to enter prometheus and copy what we want into grafana 
+this is the final result
+link to grafana http://18.157.177.1:3000/d/SpST1BZMk/docker?orgId=1
+link to the wordpress website http://18.157.177.1:8000/
