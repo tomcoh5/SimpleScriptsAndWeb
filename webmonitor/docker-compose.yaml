@@ -1,0 +1,17 @@
+version: '2'
+services:
+  web:
+    build: Dockerfile1
+    ports:
+      -  8080:80
+    volumes:
+      - DataVolume:/usr/local/apache2/mydata
+
+  monitor:
+    image: Dockerfile2
+    ports:
+      - 8081:80
+    volumes:
+      - DataVolume:/usr/local/apache2/mydata
+volumes:
+  DataVolume:
