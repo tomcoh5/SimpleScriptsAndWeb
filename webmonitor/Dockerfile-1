@@ -1,0 +1,10 @@
+FROM httpd:2.4
+VOLUME /mydata
+RUN rm -f conf/httpd.conf
+COPY httpd.conf conf/httpd.con
+RUN timedatectl set-local-rtc 1
+RUN apt-get update -y
+RUN apt-get install cron -y
+COPY bor.sh .
+RUN service cron start
+COPY activatesh.sh .
