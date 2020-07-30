@@ -1,0 +1,8 @@
+FROM httpd:2.4
+VOLUME /mydata
+COPY check.py
+RUN touch mydata/log.html
+RUN apt-get update -y
+RUN apt-get install cron -y
+RUN service cron start
+COPY activatepy.sh
