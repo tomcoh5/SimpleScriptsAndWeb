@@ -1,6 +1,6 @@
 #!/bin/bash
 BACKUP_DIR="define your backup dir here"
-DATE=$(date +%Y-%m-%d)
+DATE=$(date +%Y-%m-%d-%H:%M)
 FILE="$BACKUPDIR/$DATE.SQL.gz"
 USER="root"
 
