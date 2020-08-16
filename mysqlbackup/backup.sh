@@ -1,7 +1,7 @@
 #!/bin/bash
-BACKUP_DIR="/root/plz"
+BACKUP_DIR="define your backup dir here"
 DATE=$(date +%Y-%m-%d)
-FILE="$BACKUPDIR/testdb$DATE.SQL.gz"
+FILE="$BACKUPDIR/$DATE.SQL.gz"
 USER="root"
 
 unalias rm     2> /dev/null
