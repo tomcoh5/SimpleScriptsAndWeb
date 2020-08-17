@@ -1,6 +1,15 @@
-#!/bin/ibash
-echo "write down file path"
-read $file_path
-echo "how many days you want to look back?"
-read $days
-find $file_path -type f -mtime -$days -print
+#!/bin/bash
+file_path="/home/yuofvi/gopower"
+backup_dir="/root/backup"
+echo "Got it this is your file path $file_path"
+echo "Searching for files ..."
+cd $file_path
+pwd
+echo "Saving all the files"
+echo "Making backup file"
+for file in `find $file_path -type f -mtime -7 -exec ls -l {} \; | awk '{print $9}'`;do
+	echo making back up for $file
+	tar -cvf $backupdir/$file.tar
+done
+
+	
