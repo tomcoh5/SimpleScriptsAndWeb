@@ -11,53 +11,66 @@ def dockercontainer():
         running = False
     else:
         if image == "apache" or image == "nginx" or image == "httpd":
-            print("port for your dockerfile -is ")
-            bashcommand = "docker run -d -p 8080:8080 " + image
-            deployforcontainer()
+            bashcommand = "docker run -d --name " + name + " -p 8080:8080 " + image
+            deploycommand()
         elif image == "grafana":
             bashcommand = "docker run -d -p 3000:3000 " + image
-            deployforcontainer()
+            deploycommand()
         elif image == "postgresql" or image == "postgres":
             password = input("write down password for your database")
             bashcommand = "docker run --name " + name + " -e POSTGRES_PASSWORD=" + password + " -d postgres"
-            deployforcontainer()
+            deploycommand()
         elif image == "mysql":
             password = input("write down password for your database")
             bashcommand = "docker run --name " + name + " MYSQL_ROOT_PASSWORD=" + password + " -d mysql"
-            deployforcontainer()
+            deploycommand()
         else:
             tellme = input("Do you need port for your image?")
             if tellme == "quit":
                 running = False
             elif tellme == "yes":
                 port = input("Write Down the port")
-                bashcommand = "docker run -d -p " + port + "  " + image
-                deployforcontainer()
+                bashcommand = "docker run -d --name " + name + " -p " + port + "  " + image
+                deploycommand()
             elif tellme == "no":
                 print("Lets run your container")
-                bashcommand = "docker run -d " + image
-                deployforcontainer()
-
-def deployforcontainer():
+                bashcommand = "docker run -d --name " + name + " " +  image
+                deploycommand()
+def deploycommand():
     global bashcommand
     try:
         process = subprocess.Popen(bashcommand.split(), stdout=subprocess.PIPE)
         print("deployed.. ")
+    except:
+        print("Error cant deploy")
+        end()
+
+def end():
+    global running
+    now= input("okay you want to keep deploying containers or exit ?")
+    if now == "exit":
+        running = False
 
 def docker_compose():
     global running
-    images = input("Okay write down all of your images")
-    image_list = list()
-    for image in images:
-        image_list.append(image)
-    print("Done proecessing....")
-    print(image_list)
-
+    global bashcommand
+    print("Lets start by adding images")
+    images_number = input("how much containers do you want ? ")
+    network = input("Creating network for your containers enter a name ")
+    bashcommand = "docker network create " + network
+    deploycommand()
+    maxlengthlist = int(images_number)
+    counter = 0
+    while counter  < maxlengthlist:
+        deploycommand()
+        counter += 1
+    end()
 
 
 while running:
     print("welcome, developer")
-    choose= input("If you want do deploy only one container press 1, if you want to deploy more then one container press 2")
+    choose= input("If you want do deploy only one container press 1 \n"
+                  " if you want to deploy a lot of  containers (connected) press 2")
     if choose == "1":
         dockercontainer()
     elif choose == "2":
