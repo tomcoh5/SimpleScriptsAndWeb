@@ -2,6 +2,17 @@ from flask import Flask, request, render_template, redirect, url_for
 import subprocess
 app = Flask(__name__)
 
+def deploycommand():
+    global bashcommand
+    global process
+    try:
+        process = subprocess.Popen(bashcommand.split(), stdout=subprocess.PIPE)
+        return "deployed.. "
+    except:
+        return "Error cant deploy"
+
+
+
 @app.route('/')
 def my_form():
     return render_template('my-form.html')
@@ -70,13 +81,6 @@ if __name__ == "__main__":
 
 #some functions to make it easy
 
-def deploycommand():
-    global bashcommand
-    try:
-        process = subprocess.Popen(bashcommand.split(), stdout=subprocess.PIPE)
-        return "deployed.. "
-    except:
-        return "Error cant deploy"
 
 
 def dockercontainer():
