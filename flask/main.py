@@ -13,16 +13,7 @@ def deploycommand():
         return "deployed.. "
     except:
         return "Error cant deploy"
-def did():
-    global bashcommand
-    return bashcommand + "has been deployed you can check it out by doing docker ps -a"
 
-@app.route('/test')
-def test():
-    global bashcommand
-    bashcommand = "docker run "
-    did()
-    return redirect("http://" + ip + ":5000")
 
 @app.route('/')
 def my_form():
@@ -33,8 +24,38 @@ def my_form_post():
     text = request.form['text']
     if text =="1":
         return redirect("http://"+ ip +":5000/container")
+    elif text == "2":
+        return redirect("http://" + ip +":5000/multi")
     else:
         return "Error 404"
+
+@app.route('/multi')
+def multi():
+    return render_template('multi.html')
+
+@app.route('/multi', methods=['POST', 'GET'])
+def multi_post():
+    global num
+    num = request.form['text']
+    return redirect("http://" + ip +":5000/objects")
+
+@app.route('/objects')
+def objects():
+    return render_template('objects.html')
+
+
+@app.route('/objects', methods=['POST', 'GET'])
+def objects_post():
+    counter = 0
+    define = request.form['text']
+    while counter  < num:
+        arrange = define.split()
+        image = arrange[0]
+        name = arrange[1]
+        counter += 1
+        if image == "apache":
+            return "apache"
+
 
 
 @app.route('/container')
