@@ -163,12 +163,12 @@ def password_post():
 
 
 @app.route('/passwordpost2')
-def password():
+def password2():
     return render_template('password2.html')
 
 
 @app.route('/passwordpost2', methods=['POST', 'GET'])
-def password_post():
+def password_post2():
     global bashcommand
     password = request.form['text']
     bashcommand = "docker run --name " + name + " -e POSTGRES_PASSWORD=" + password + " -d postgres"
@@ -177,12 +177,12 @@ def password_post():
 
 
 @app.route('/passwordmysql2')
-def passwordsql():
+def passwordsql2():
     return render_template('passwordsql2.html')
 
 
 @app.route('/passwordmysql2', methods=['POST', 'GET'])
-def passwordsql_post():
+def passwordsql_post2():
     global bashcommand
     password = request.form['text']
     bashcommand = "docker run --name " + name + " MYSQL_ROOT_PASSWORD=" + password + " -d mysql"
@@ -191,12 +191,12 @@ def passwordsql_post():
 
 
 @app.route('/deployment2')
-def deployment():
+def deployment2():
     return render_template('deployment2.html')
 
 
 @app.route('/deployment2', methods=['POST', 'GET'])
-def deployment_post():
+def deployment_post2():
     global bashcommand
     port = request.form['text']
     if port == "no":
