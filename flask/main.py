@@ -63,11 +63,6 @@ def multi_post():
 def objects():
     return render_template('objects.html')
 
-def test():
-    global password
-    password_post()
-    return redirect("http://" + ip + ":5000/objects")
-
 
 
 @app.route('/objects', methods=['POST', 'GET'])
@@ -84,19 +79,19 @@ def objects_post():
         name = arrange[1]
         if image == "apache" or image == "nginx" or image == "httpd":
             bashcommand = "docker run -d --name " + name + " -p 8080:8080 " + image
-            deploycommand()
+            dockercommand.append(bashcommand)
             return redirect("http://" + ip + ":5000/objects")
         elif image == "grafana":
             bashcommand = "docker run -d -p 3000:3000 " + image
-            deploycommand()
+            dockercommand.append(bashcommand)
             return redirect("http://" + ip + ":5000/objects")
         elif image == "postgresql" or image == "postgres":
             return redirect("http://" + ip + ":5000/passwordpost2")
         elif image == "mysql":
             bashcommand = "docker run --name " + name + " MYSQL_ROOT_PASSWORD=" + password + " -d mysql"
-            return redirect("http://" + ip + ":5000/passwordmysql")
+            return redirect("http://" + ip + ":5000/passwordmysql2")
         else:
-            return redirect("http://" + ip + ":5000/deployment")
+            return redirect("http://" + ip + ":5000/deployment2")
 
 
 
@@ -118,11 +113,11 @@ def plz_post():
     dockercommand = list()
     if image == "apache" or image == "nginx" or image == "httpd":
         bashcommand = "docker run -d --name " + name + " -p 8080:8080 " + image
-        dockercommand.append(bashcommand)
+        deploycommand()
         return redirect("http://" + ip + ":5000")
     elif image == "grafana":
         bashcommand = "docker run -d -p 3000:3000 " + image
-        dockercommand.append(bashcommand)
+        deploycommand()
         return redirect("http://" + ip + ":5000")
     elif image == "postgresql" or image == "postgres":
         return redirect("http://" + ip + ":5000/passwordpost")
