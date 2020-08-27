@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for
 import subprocess
 import urllib.request
-
+dockercommand = list()
 ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
 
 app = Flask(__name__)
@@ -12,9 +12,9 @@ def deploycommand2(command):
     global process
     try:
         process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-        return "deployed.. "
+        return process
     except:
-        return "Error cant deploy"
+        return "Error"
 
 
 
@@ -54,8 +54,8 @@ def multi_post():
     global network
     global bashcommand
     network = request.form['text']
-    bashcommand = "docker create network " + network
-    deploycommand()
+    bashcommand = "docker network create  " + network
+    process = subprocess.Popen(bashcommand.split(), stdout=subprocess.PIPE)
     return redirect("http://" + ip + ":5000/objects")
 
 
@@ -82,13 +82,12 @@ def objects_post():
             dockercommand.append(bashcommand)
             return redirect("http://" + ip + ":5000/objects")
         elif image == "grafana":
-            bashcommand = "docker run -d -p 3000:3000 " + image
+            bashcommand = "docker run -d -p 3000:3000 grafana/grafana"
             dockercommand.append(bashcommand)
             return redirect("http://" + ip + ":5000/objects")
         elif image == "postgresql" or image == "postgres":
             return redirect("http://" + ip + ":5000/passwordpost2")
         elif image == "mysql":
-            bashcommand = "docker run --name " + name + " MYSQL_ROOT_PASSWORD=" + password + " -d mysql"
             return redirect("http://" + ip + ":5000/passwordmysql2")
         else:
             return redirect("http://" + ip + ":5000/deployment2")
@@ -122,10 +121,9 @@ def plz_post():
     elif image == "postgresql" or image == "postgres":
         return redirect("http://" + ip + ":5000/passwordpost")
     elif image == "mysql":
-        bashcommand = "docker run --name " + name + " MYSQL_ROOT_PASSWORD=" + password + " -d mysql"
-        return redirect("http://" + ip + ":5000/passwordmysql2")
+        return redirect("http://" + ip + ":5000/passwordmysql")
     else:
-        return redirect("http://" + ip + ":5000/deployment2")
+        return redirect("http://" + ip + ":5000/deployment")
 
 @app.route('/display')
 def display():
@@ -144,7 +142,7 @@ def display_post():
 
 
 @app.route('/passwordpost')
-def password():
+def password5():
     return render_template('password.html')
 
 
@@ -180,7 +178,7 @@ def passwordsql2():
 def passwordsql_post2():
     global bashcommand
     password = request.form['text']
-    bashcommand = "docker run --name " + name + " MYSQL_ROOT_PASSWORD=" + password + " -d mysql"
+    bashcommand = "docker run --name " + name + " -e MYSQL_ROOT_PASSWORD=" + password + " -d mysql"
     dockercommand.append(bashcommand)
     return redirect("http://" + ip + ":5000/objects")
 
@@ -221,7 +219,7 @@ def passwordsql():
 def passwordsql_post():
     global bashcommand
     password = request.form['text']
-    bashcommand = "docker run --name " + name + " MYSQL_ROOT_PASSWORD=" + password + " -d mysql"
+    bashcommand = "docker run --name " + name + " -e MYSQL_ROOT_PASSWORD=" + password + " -d mysql"
     deploycommand()
     return redirect("http://" + ip + ":5000")
 
