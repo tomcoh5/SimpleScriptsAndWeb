@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+{% if session['logged_in'] %}
+	<p>Here is all the commands for deployment: {{ command }}</p>
+	<p> if you want to deploy them type yes and if u want to go back to the main menu type no</p>
+	<form method="POST">
+    	<input name="text">
+    	<input type="submit">
+	</form>
+{% else %}
+	<p> you must be logged in </p>

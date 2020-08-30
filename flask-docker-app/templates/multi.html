@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+{% if session['logged_in'] %}
+	<p>First lets create network for your docker containers, write down name for your network</p>
+	<form method="POST">
+    	<input name="text">
+    	<input type="submit">
+	</form>
+{% else %}
+	<p> you arent logged in </p>
+
+{% endif %}
+{% endblock %}
+

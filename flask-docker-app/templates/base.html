@@ -1,0 +1,19 @@
+<html>
+  <head>
+	<div class="wrapper">
+	  <div class="container">
+		<h1> Docker App Created by Tom Cohen </h1>
+ 		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  		<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+
+  </head>
+  <body>
+    <div><a href="/">Home</a></div>
+		
+    <hr>
+    {% block content %}{% endblock %}
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+{% if session['logged_in'] %}	
+	<h2>Welcome to docker creation</h2>
+	<p align="center"><a href=/container ><button class=grey style="height:75px;width:150px">for 1 docker container creation</button></a></p>
+	<p align="center"><a href=/multi ><button class=grey style="height:75px;width:150px">for multi docker container creation</button></a></p>
+
+{% else %}
+
+	<p> you must be logged in </p>
+
+{% endif %}
+{% endblock %}
+~
+

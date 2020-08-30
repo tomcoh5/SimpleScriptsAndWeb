@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+{% if session['logged_in'] %}
+	<p>write down the image name and after that the name for the container (with space between them)</p>
+        <form method="POST">
+        <input name="text">
+        <input type="submit">
+        </form>
+
+{% else %}
+
+	<p> you need to log in to see this page </p> 
+{% endif %}
+{% endblock %}
+~
+

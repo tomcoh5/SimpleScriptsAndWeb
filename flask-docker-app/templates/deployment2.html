@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+{% if session['logged_in'] %}
+	<p> if you want ports for your container write it like this "8080:8080", if you dont want any port for your container just type no</p>
+	<form method="POST">
+    	<input name="text">
+    	<input type="submit">
+	</form>
+{% else %}
+	<p> you must be logged in </p>
+
