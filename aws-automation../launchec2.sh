@@ -1,9 +1,9 @@
 #!/bin/bash
 echo "Please make sure you got your keypair in your host instance"
-access_key_id='AKIAIE7MMNFNGMF5UGSA'
-secret_access_key='oezzQHdYlXQiseWAk47MucO0dWENxQDwLQBB7uyG'
+access_key_id= #put your key here
+secret_access_key= #put your key here 
 region='eu-central-1'
-key_pair='elasticsearch'
+key_pair= #put your keypair here
 if [ $(id -u) -ne 0 ]; then echo "Please run as root" ; exit 1 ; fi
 aws --version
 if [ $? -eq 0 ];then
