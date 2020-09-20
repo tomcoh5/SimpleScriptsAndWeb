@@ -1,5 +1,0 @@
-aws cloudwatch look for billing 
-https://aws.amazon.com/premiumsupport/knowledge-center/cloudwatch-logs-bill-increase/
-when you have problem connection between instances in two diffrent regions you need to check from the top to the beggining secrity groups , nacl , route table and vpc peering
-and the last thing you need to learn more kubectl
-harder for the job 
