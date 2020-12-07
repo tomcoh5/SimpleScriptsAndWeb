@@ -1,0 +1,10 @@
+#ansible-galaxy install indigo-dc.zabbix-agent
+-
+    name: 'Execute a script on all web server nodes'
+    hosts: all
+    roles:
+            - { role: indigo-dc.zabbix-agent, zabbix_agent_server: ubuntu-slave-1  }
+            - { role: indigo-dc.zabbix-agent, zabbix_agent_server: ubuntu-slave-2  }
+            - { role: indigo-dc.zabbix-agent, zabbix_agent_server: ubuntu-slave-3  }
+            - { role: indigo-dc.zabbix-agent, zabbix_agent_server: ubuntu-slave-4  }
+
