@@ -1,0 +1,40 @@
+-
+    name: 'Execute a script on all web server nodes'
+    hosts: all
+    tasks:
+        -
+            name: 'install python-*'
+            apt:
+                    name: "{{ item }}"
+                    state: present
+            loop:
+                    - python
+                    - python-setuptools
+                    - python-dev
+                    - build-essential
+                    - python-pip
+                    - python-mysqldb
+        -
+            name: "install mysql"
+            apt:
+                    name: "{{ item }}"
+                    state: present
+            loop:
+                    - mysql-server
+                    - mysql-client
+        -
+            name: "service mysql start"
+            service:
+                    name: mysql
+                    state: started
+        -
+            name: "install pip module"
+            pip:
+                    name: "{{ item }}"
+                    state: present
+            loop:
+                    - flask
+                    - flask-mysql
+        -
+            name: "copy app.py"
+            copy: src=/root/ansible/app.py dest=/opt/app.py
