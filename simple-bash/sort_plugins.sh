@@ -36,9 +36,10 @@ done
 
 count=0
 
-pwd | grep -q 'Mac' && $target_root grep -q 'Mac' || count+=1
+pwd | grep -q 'Mac' && $target_root grep -q 'Mac' || count=$((count + 1 ))
 
-pwd | grep -q 'Win' && $target_root grep -q 'Win' || count+=1
+pwd | grep -q 'Win' && $target_root grep -q 'Win' || count=$((count + 1 ))
+
 
 if [[ $count -eq 2 ]];then
         echo "wrong path"
