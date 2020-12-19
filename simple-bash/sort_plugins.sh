@@ -33,7 +33,20 @@ do
     esac
 done
 
-pwd | grep -q "Win\|Mac"
+
+count=0
+
+pwd | grep -q 'Mac' && $target_root grep -q 'Mac' || count+=1
+
+pwd | grep -q 'Win' && $target_root grep -q 'Win' || count+=1
+
+if [[ $count -eq 2 ]];then
+        echo "wrong path"
+        exit 1
+fi
+
+
+
 
 #
 
