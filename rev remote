@@ -1,0 +1,48 @@
+import os
+import re
+import subprocess
+from atlassian import Confluence
+# pip3  install Atlassian-python-API
+# must have svn cli (not configured)
+
+confluence = Confluence(url="https://confluence.waves.com:8443", username="Tomco", password="Neta201020@")
+
+
+
+
+revision = "svn info http://lachouffe/svn/V12_beta  | grep Revision | grep -oh [0-9][0-9][0-9]"
+output = subprocess.getoutput(revision)
+
+
+real_print_list = list()
+real_print_list.append("<p> Current Revision :" + output + "</p>")
+
+
+current = int(output)
+last = current - 20
+final = ""
+
+for num in range(last, current + 1):
+   lines = " svn log http://lachouffe/svn/V12_beta | sed -n -e '/r" + str(num) + "/,/-----/ p'"
+   output_for_line = subprocess.getoutput(lines)
+   output_for_line = output_for_line.rsplit("\n", 1)[0]
+   output_for_line = output_for_line.replace('shai', '')
+   output_for_line = output_for_line.replace('|', '')
+   final = "  <p>  " + output_for_line + "  </p>  "
+   real_print_list.append(final)
+
+
+
+real_print_list = ''.join(real_print_list)
+
+status = confluence.update_page(
+    parent_id=None,
+    page_id=66945370,
+    title="RepoRev ",
+    body=real_print_list,
+)
+
+if status:
+    print("Update")
+else:
+    print("Error")
