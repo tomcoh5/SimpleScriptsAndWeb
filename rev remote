@@ -1,56 +1,114 @@
-import os
+#!/usr/bin/python3
 import re
+from datetime import datetime
+import os
 import subprocess
 import sys
+import sqlite3
 from atlassian import Confluence
+from tabulate import tabulate
 # pip3  install Atlassian-python-API
 # must have svn cli (not configured)
+# sudo apt-get install subversion
+# pip3 install tabulate
 
-confluence = Confluence(url="https://confluence.waves.com:8443", username="Tomco", password="Neta201020@")
+
+
+env = ""
+
+list_of_lists = list()
+
+confluence = Confluence(url="")
 real_print_list = list()
 
-path = "svn info http://lachouffe/svn/V12_beta  | grep Path"
+path = "svn info " + env + " | grep Path"
 output_path = subprocess.getoutput(path)
-real_print_list.append("<p>" + output_path + "</p>")
+title_path = "<p>" + output_path + "</p>"
 
-revision = "svn info http://lachouffe/svn/V12_beta  | grep Revision | grep -oh [0-9][0-9][0-9]"
+revision = "svn info " + env + "  | grep Revision | grep -oh [0-9][0-9][0-9]"
 output = subprocess.getoutput(revision)
 
 
+info = '<p> Info about Repo '
+info += ' Latest Revision : ' + output
+info +=  ' Repo location: ' + output_path  + "</p>"
 
-real_print_list.append("<p> Current Revision :" + output + "</p>")
 
 
 current = int(output)
-last = current -10
+last = current -30
 final = ""
 
-for num in range(last, current + 1):
-   line = " svn log http://lachouffe/svn/V12_beta | sed -n -e '/r" + str(num) + "/,/-----/ p'"
-   number = "svn log http://lachouffe/svn/V12_beta | grep r" + str(num) + " | grep -oh '[0-9] line' | grep -oh '[0-9]'"
+
+
+table_description = list()
+table_description.append('Description')
+
+table_date = list()
+table_date.append('Date')
+
+table_revision = list()
+table_revision.append('Revision Number')
+for num in reversed(range(last, current + 1)):
+   line = " svn log " + env +"| sed -n -e '/r" + str(num) + "/,/-----/ p'"
+   number = "svn log " + env + " | grep r" + str(num) + " | grep -oh '[0-9] line' | grep -oh '[0-9]'"
+   repo_rev_number =  "svn log + "  + env  + " |  grep  " + str(num)  + " |grep -oh 'r[0-9][0-9][0-9]'"
+   r_number = "svn log " + env + " | grep r" + str(num) + "  -oh "
+
+   output_for_r_number = subprocess.getoutput(r_number)
    output_for_number = subprocess.getoutput(number)
+
+
+
    output_for_line = subprocess.getoutput(line)
+   output_for_line = output_for_line.lsplit("\n", 1)[0]
    output_for_line = output_for_line.rsplit("\n", 1)[0]
+   output_for_line = output_for_line.replace(output_for_r_number ,'')
    output_for_line = output_for_line.replace('shai', '')
    output_for_line = output_for_line.replace('|', '')
+
    if "lines" in output_for_line:
        output_for_line = output_for_line.replace(output_for_number + ' lines' , '')
    elif "line" in output_for_line:
-       print("Okay")
        output_for_line = output_for_line.replace(output_for_number + ' line' , '')
 
-   final = "  <p>  " + output_for_line + "  </p>  "
-   real_print_list.append(final)
+       
+   match_date = re.search(r'\d{4}-\d{2}-\d{2}', output_for_line)
+   date = datetime.strptime(match_date.group(), '%Y-%m-%d').date()
+   output_for_line = output_for_line.replace(str(date), '')
+   match_hour = re.search('\d{2}:\d{2}:\d{2}', output_for_line)
+   hour_minute = match_hour.group(0)
+   output_for_line = output_for_line.replace(hour_minute, '')
+
+   final_date = str(date) + "  " + hour_minute
 
 
+   match_closing_date = re.search(r'\([^()]*\)', output_for_line)
+   extract_closing = match_closing_date.group(0)
+   output_for_line = output_for_line.replace(str(extract_closing), '')
 
-real_print_list = ''.join(real_print_list)
+   match_plus_digit = re.search('\+\d\d\d\d', output_for_line)
+   remove_plug_digit = match_plus_digit.group(0)
+   output_for_line = output_for_line.replace(remove_plug_digit, '')
+
+
+   table_description.append(output_for_line)
+   table_revision.append(output_for_r_number)
+   table_date.append(final_date)
+
+list_of_lists.append(table_description)
+list_of_lists.append(table_revision)
+list_of_lists.append(table_date)
+
+add = tabulate(list_of_lists, tablefmt='html')
+
+final = info + add
 
 status = confluence.update_page(
     parent_id=None,
-    page_id=66945370,
-    title="RepoRev ",
-    body=real_print_list,
+    page_id=,
+    title= title_path,
+    body=final,
 )
 
 if status:
