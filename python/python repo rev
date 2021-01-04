@@ -1,0 +1,100 @@
+#!/usr/bin/python3
+import re
+from datetime import datetime
+import os
+import subprocess
+import sys
+import sqlite3
+from atlassian import Confluence
+from tabulate import tabulate
+
+# pip3  install Atlassian-python-API
+# sudo apt-get install subversion
+# pip3 install tabulate
+
+
+#url = sys.argv[1]
+url = "V12_beta"
+if url == "":
+    print("Error")
+    exit()
+
+env = "http://lachouffe/svn/" + url
+
+
+confluence = Confluence(url="", username="", password="")
+real_print_list = list()
+path = "svn info " + env + " | grep Path "
+output_path = subprocess.getoutput(path)
+
+title_path = output_path.split(":")[1]
+
+revision = "svn info " + env + "  | grep Revision | grep -oh [0-9][0-9][0-9]"
+output = subprocess.getoutput(revision)
+
+
+
+
+
+all = "svn log "+ env + " "
+
+all_output = subprocess.getoutput(all)
+
+
+def l_sort(a):
+    return a[0]
+c = list()
+c.append("Date")
+b = list()
+b.append("RepoRev")
+a = list()
+a.append("Description")
+all_read = all_output.split('\n')
+final = ""
+for row in all_read:
+    index = all_read.index(row)
+    if not row.startswith("---") and not row == "":
+         if len(row.split("|")) == 4:
+            b.append(row.split("|")[0])
+            repo_rev = row.split("|")[0]
+            c.append(row.split("|")[2])
+         else:
+             index += 1
+             if not row == "":
+                 if all_read[index].startswith("---") and all_read[index - 2] == "":
+                     a.append(row)
+                 else:
+                     for row in all_read[index:index+2]:
+                         if all_read[index].startswith("---") or len(all_read[index].split("|")) == 4:
+                            a.append(final)
+                            final = ""
+                            break
+                         else:
+                             final += all_read[index - 1] + " "
+                             final += all_read[index] + " "
+                             break
+
+b  = list(filter(None, b))
+c = list(filter(None, c))
+a = list(filter(None, a))
+d = list()
+d.append(b)
+d.append(c)
+d.append(a)
+
+
+
+add = tabulate(d, tablefmt='html')
+
+url = str(url)
+status = confluence.update_page(
+    parent_id=58163443,
+    page_id=66945673,
+    title=title_path,
+    body=add,
+)
+
+if status:
+    print("Update")
+else:
+    print("Error")
