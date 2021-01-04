@@ -1,0 +1,27 @@
+import svn.remote
+
+r = svn.remote.RemoteClient('url')
+for e in l.log_default():
+    print(e)
+
+str = "LogEntry(date=datetime.datetime(2015, 4, 24, 3, 2, 39, 895975, tzinfo=tzutc()), msg='Added second file.', revision=2, author='dustin')"
+almost = str.split("=")[3]
+message = almost.split(",")[0]
+message = eval(message)
+revision = str.split(",")[9]
+revision = revision.split("=")[1]
+date = str.split("(")[2]
+year = date.split(",")[0]
+month = date.split(",")[2]
+day = date.split(",")[4]
+time = year + "- " + month +" -" + day
+time = ''.join(time.split())
+
+
+
+#doc
+for info in log:
+    print info.revision.number,
+    print info.author,
+    print time.ctime(info.date),
+    print info.message
