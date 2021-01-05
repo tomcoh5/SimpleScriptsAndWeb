@@ -1,0 +1,73 @@
+import subprocess
+import os
+from atlassian import Confluence
+from tabulate import tabulate
+# pip3  install Atlassian-python-API
+# must have svn cli (not configured)
+
+#env = sys.argv[1]
+env = "V12_beta"
+
+
+path = "svn info http://lachouffe/svn/" + env + " | grep Path"
+output_path = subprocess.getoutput(path)
+title = output_path.split(":")[1]
+
+
+whereami = "pwd"
+whereami_output = subprocess.getoutput(whereami)
+
+remove = "rm -fr  " + whereami_output + "/" + "log.xml"
+os.system(remove)
+
+
+command = "svn log  http://lachouffe/svn/"+ env + " --xml > log.xml"
+os.system(command)
+
+confluence = Confluence(url="h", username="", password="")
+revision_list = list()
+revision_list.append("Revision")
+date_list = list()
+date_list.append("Date")
+msg_list = list()
+msg_list.append("Message")
+
+with open(whereami_output +"/log.xml",encoding='utf-8') as fp:
+    line = fp.readline()
+    cnt = 1
+    while line:
+        line = fp.readline()
+        if line.__contains__("revision"):
+            revision = line.split("=")[1]
+            revision = revision.split(">")[0]
+            revision = revision.replace("\n","")
+            revision = revision.replace('"', '')
+            revision_list.append(revision)
+        if line.startswith("<date>"):
+            date = line.split(">")[1]
+            date = date.replace("T", " ")
+            date = date.split(".")[0]
+            date_list.append(date)
+        if line.startswith("<msg>"):
+            msg = line.replace("<msg>","")
+            msg = msg.replace("</msg>","")
+            msg_list.append(msg)
+
+final = list()
+final.append(revision_list)
+final.append(date_list)
+final.append(msg_list)
+
+add = tabulate(final, tablefmt='html')
+
+status = confluence.update_page(
+    parent_id=58163443,
+    page_id=66945673,
+    title=title,
+    body=add,
+)
+
+if status:
+    print("Update")
+else:
+    print("Error")
