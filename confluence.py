@@ -58,7 +58,7 @@ pageid = confluence.get_page_id('SWDO', env)
 
 
 contentApiUrl = '/rest/api/content'
-confluenceBaseUrl = 'https://confluence.waves.com:8443'
+confluenceBaseUrl = ''
 pageId = pageid
 
 requestUrl = '{confluenceBaseUrl}{contentApiUrl}/{pageId}?expand=body.storage'.format(confluenceBaseUrl = confluenceBaseUrl, contentApiUrl = contentApiUrl, pageId = pageId)
