@@ -53,7 +53,7 @@ current_repo_rev = l.group(1)
 
 html_content_latest  = "<p> Latest Repo Rev:" + current_repo_rev + " </p> "
 
-confluence = Confluence(url="https://confluence.waves.com:8443", username=username, password=password)
+confluence = Confluence(url="", username=username, password=password)
 pageid = confluence.get_page_id('SWDO', env)
 
 
